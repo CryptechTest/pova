@@ -5,17 +5,22 @@ pova = {}
 -- local
 local pova_list = {}
 
+-- do we want override loop enabled to apply changes every second?
+local pova_loop = minetest.settings:get_bool("pova_loop") ~= false
+
 
 -- set player table and defaults on join
 minetest.register_on_joinplayer(function(player)
 	pova_list[ player:get_player_name() ] = {
 		default = {speed = 1, jump = 1, gravity = 1}}
+	pova.do_override(player)
 end)
 
 -- reset player table and defaults on respawn
 minetest.register_on_respawnplayer(function(player)
 	pova_list[ player:get_player_name() ] = {
 		default = {speed = 1, jump = 1, gravity = 1}}
+	pova.do_override(player)
 end)
 
 -- blank player table on leave
@@ -36,7 +41,7 @@ end
 
 pova.get_override = function(name, item)
 	if item == "default" then return end
-	return pova[name][item]
+	return pova_list[name][item]
 end
 
 pova.del_override = function(name, item)
@@ -44,54 +49,60 @@ pova.del_override = function(name, item)
 	pova_list[name][item] = nil
 end
 
+pova.do_override = function(player)
 
--- main counter that runs every second and totals override list
-local timer = 0
-minetest.register_globalstep(function(dtime)
+	local name = player:get_player_name()
 
-	timer = timer + dtime
+	if name and pova_list[name] then
 
-	-- every 1 second
-	if timer < 1 then
-		return
-	end
+		-- check for new defaults
+		local speed = pova_list[name]["default"].speed or 1
+		local jump = pova_list[name]["default"].jump or 1
+		local gravity = pova_list[name]["default"].gravity or 1
 
-	-- reset time for next check
-	timer = 0
+		for id, var in pairs(pova_list[name]) do
 
-	-- define locals outside loop
-	local name, speed, jump, gravity
+			if var and id ~= "default" then
 
-	-- loop through players
-	for _,player in ipairs(minetest.get_connected_players()) do
-
-		name = player:get_player_name()
-
-		if pova_list[name] then
-
-			-- check for new defaults
-			speed = pova_list[name]["default"].speed or 1
-			jump = pova_list[name]["default"].jump or 1
-			gravity = pova_list[name]["default"].gravity or 1
-
-			for id, var in pairs(pova_list[name]) do
-
-				if var and id ~= "default" then
-
-					-- add any additional changes
-					speed = speed + (pova_list[name][id].speed or 0)
-					jump = jump + (pova_list[name][id].jump or 0)
-					gravity = gravity + (pova_list[name][id].gravity or 0)
-				end
+				-- add any additional changes
+				speed = speed + (pova_list[name][id].speed or 0)
+				jump = jump + (pova_list[name][id].jump or 0)
+				gravity = gravity + (pova_list[name][id].gravity or 0)
 			end
-
-			print ("speed: " .. speed .. " / jump: " .. jump .. " / gravity: " .. gravity)
-
-			player:set_physics_override(speed, jump, gravity)
-
 		end
+
+		-- for testing only
+		if name == "singleplayer" then
+			print ("speed: " .. speed .. " / jump: " .. jump .. " / gravity: " .. gravity)
+		end
+
+		player:set_physics_override(speed, jump, gravity)
 	end
-end)
+end
+
+
+-- main counter that runs every second and totals override list (if enabled)
+if pova_loop then
+
+	local timer = 0
+	minetest.register_globalstep(function(dtime)
+
+		timer = timer + dtime
+
+		-- every 1 second
+		if timer < 1 then
+			return
+		end
+
+		-- reset time for next check
+		timer = 0
+
+		-- loop through players and apply overrides
+		for _,player in ipairs(minetest.get_connected_players()) do
+			pova.do_override(player)
+		end
+	end)
+end
 
 
 -- axe tool to change defaults and add changes to table
@@ -111,6 +122,9 @@ minetest.register_craftitem("pova:axe", {
 		-- define changes that are added onto defaults
 		pova.add_override(name, "test", {
 			speed = 1, jump = 2, gravity = 0.5})
+
+		-- apply override
+		pova.do_override(user)
 	end,
 
 	on_place = function(itemstack, user, pointed_thing)
@@ -123,5 +137,8 @@ minetest.register_craftitem("pova:axe", {
 
 		-- remove changes
 		pova.del_override(name, "test")
+
+		-- apply override
+		pova.do_override(user)
 	end,
 })
