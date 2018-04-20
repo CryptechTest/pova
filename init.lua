@@ -117,11 +117,11 @@ minetest.register_craftitem("pova:axe", {
 
 		-- set new defaults
 		pova.set_override_defaults(name, {
-			speed = 2, jump = 0.5, gravity = 1.0})
+			speed = 2, jump = 3, gravity = 1.0})
 
 		-- define changes that are added onto defaults
 		pova.add_override(name, "test", {
-			speed = 1, jump = 2, gravity = 0.5})
+			speed = 1, jump = -1, gravity = 0.5})
 
 		-- apply override
 		pova.do_override(user)
