@@ -1,6 +1,6 @@
 # POVA
 
-Pova gives mod makers a set of functions that safely apply overrides for player speed, jump height and gravity effects.
+Pova gives mod makers a set of easy to use functions that safely apply overrides for player speed, jump height and gravity effects.
 
 ## Settings
 
@@ -10,19 +10,19 @@ Pova gives mod makers a set of functions that safely apply overrides for player 
 
 pova.set_override_defaults = function(name, def)
 
-- Sets default speed, jump and gravity for a player that overrides are added onto.
+- Sets default speed, jump and gravity for a player that additional overrides are then added onto.
 
 pova.add_override = function(name, item, def)
 
-- Adds a named override which can add or remove from speed, jump and gravity.
+- Adds a named override which can be used to add or subtract from speed, jump and gravity effects.
 
 pova.get_override = function(name, item)
 
-- Returns the table containing {speed, jump, gravity} for the added item.
+- Returns the table containing {speed, jump, gravity} for an added item.
 
 pova.del_override = function(name, item)
 
-- Removes the settings for the named item.
+- Removes the override settings for the item named.
 
 pova.do_override(player)
 
