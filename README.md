@@ -10,8 +10,7 @@ Pova gives mod makers a set of easy to use functions that safely apply overrides
 
 pova.add_override = function(name, item, def)
 
-- Adds a named override which can be used to add or subtract from speed, jump and gravity effects.
-- custom overrides are also used for specific tasks:
+- Adds a named override which can be used to add or subtract from speed, jump and gravity effects.  Custom overrides are also used for specific tasks:
 
 - "default" sets default values for speed, jump and gravity.
 - "min" provides a minimum level for each of the settings.
