@@ -12,10 +12,10 @@ pova.add_override = function(name, item, def)
 
 - Adds a named override which can be used to add or subtract from speed, jump and gravity effects.  Custom overrides are also used for specific tasks:
 
-- "default" sets default values for speed, jump and gravity.
+- "default" sets default values for each of the settings to which overrides are added.
 - "min" provides a minimum level for each of the settings.
 - "max" provides a maximum level for each of the settings.
-- "force" overrides all and forces a value for each setting (for sleeping in bed)
+- "force" overrides all and forces a value for each setting (e.g sleeping in beds)
 
 pova.get_override = function(name, item)
 
