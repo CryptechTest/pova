@@ -12,14 +12,16 @@ local pova_loop = minetest.settings:get_bool("pova_loop") ~= false
 -- set player table and defaults on join
 minetest.register_on_joinplayer(function(player)
 	pova_list[ player:get_player_name() ] = {
-		default = {speed = 1, jump = 1, gravity = 1}}
+		default = {speed = 1, jump = 1, gravity = 1},
+		min = {speed = 0, jump = 0, gravity = 0}}
 	pova.do_override(player)
 end)
 
 -- reset player table and defaults on respawn
 minetest.register_on_respawnplayer(function(player)
 	pova_list[ player:get_player_name() ] = {
-		default = {speed = 1, jump = 1, gravity = 1}}
+		default = {speed = 1, jump = 1, gravity = 1},
+		min = {speed = 0, jump = 0, gravity = 0}}
 	pova.do_override(player)
 end)
 
@@ -29,23 +31,15 @@ minetest.register_on_leaveplayer(function(player)
 end)
 
 
--- global command functions
-pova.set_override_defaults = function(name, def)
-	pova_list[name]["default"] = def
-end
-
 pova.add_override = function(name, item, def)
-	if item == "default" then return end
 	pova_list[name][item] = def
 end
 
 pova.get_override = function(name, item)
-	if item == "default" then return end
 	return pova_list[name][item]
 end
 
 pova.del_override = function(name, item)
-	if item == "default" then return end
 	pova_list[name][item] = nil
 end
 
@@ -60,9 +54,15 @@ pova.do_override = function(player)
 		local jump = pova_list[name]["default"].jump or 1
 		local gravity = pova_list[name]["default"].gravity or 1
 
+		-- loop through list of added overrides
 		for id, var in pairs(pova_list[name]) do
 
-			if var and id ~= "default" then
+			-- skip any custom sets
+			if var
+			and id ~= "default"
+			and id ~= "min"
+			and id ~= "max"
+			and id ~= "force" then
 
 				-- add any additional changes
 				speed = speed + (pova_list[name][id].speed or 0)
@@ -71,11 +71,33 @@ pova.do_override = function(player)
 			end
 		end
 
+		-- minimum checks
+		if pova_list[name]["min"] then
+			speed = math.max(pova_list[name]["min"].speed or speed, speed)
+			jump = math.max(pova_list[name]["min"].jump or jump, jump)
+			gravity = math.max(pova_list[name]["min"].gravity or gravity, gravity)
+		end
+
+		-- maximum checks
+		if pova_list[name]["max"] then
+			speed = math.min(pova_list[name]["max"].speed or speed, speed)
+			jump = math.min(pova_list[name]["max"].jump or jump, jump)
+			gravity = math.min(pova_list[name]["max"].gravity or gravity, gravity)
+		end
+
+		-- force values (for things like sleeping in bed)
+		if pova_list[name]["force"] then
+			speed = pova_list[name]["force"].speed or speed
+			jump = pova_list[name]["force"].jump or jump
+			gravity = pova_list[name]["force"].gravity or gravity
+		end
+
 		-- for testing only
 		if name == "singleplayer" then
 			print ("speed: " .. speed .. " / jump: " .. jump .. " / gravity: " .. gravity)
 		end
 
+		-- set new overrides
 		player:set_physics_override(speed, jump, gravity)
 	end
 end
@@ -116,12 +138,24 @@ minetest.register_craftitem("pova:axe", {
 		local name = user:get_player_name()
 
 		-- set new defaults
-		pova.set_override_defaults(name, {
+		pova.add_override(name, "default", {
 			speed = 2, jump = 3, gravity = 1.0})
 
 		-- define changes that are added onto defaults
 		pova.add_override(name, "test", {
 			speed = 1, jump = -1, gravity = 0.5})
+
+		-- set new minimum for jump
+		pova.add_override(name, "min", {
+			jump = 3})
+
+		-- add new maximum for speed
+		pova.add_override(name, "max", {
+			speed = 2})
+
+		-- add force value for gravity
+		pova.add_override(name, "force", {
+			gravity = 1.2})
 
 		-- apply override
 		pova.do_override(user)
@@ -131,12 +165,18 @@ minetest.register_craftitem("pova:axe", {
 
 		local name = user:get_player_name()
 
-		-- reset defaults
-		pova.set_override_defaults(name, {
-			speed = 1, jump = 1, gravity = 1})
-
 		-- remove changes
+		pova.del_override(name, "max")
+		pova.del_override(name, "force")
 		pova.del_override(name, "test")
+
+		-- reset min for jump
+		pova.add_override(name, "min", {
+			jump = 0})
+
+		-- reset defaults
+		pova.add_override(name, "default", {
+			speed = 1, jump = 1, gravity = 1})
 
 		-- apply override
 		pova.do_override(user)
