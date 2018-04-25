@@ -13,10 +13,10 @@ pova.add_override = function(name, item, def)
 - Adds a named override which can be used to add or subtract from speed, jump and gravity effects.
 - custom overrides are also used for specific tasks:
 
--- "default" sets default values for speed, jump and gravity.
--- "min" provides a minimum level for each of the settings.
--- "max" provides a maximum level for each of the settings.
--- "force" overrides all and forces a value for each setting (for sleeping in bed)
+- "default" sets default values for speed, jump and gravity.
+- "min" provides a minimum level for each of the settings.
+- "max" provides a maximum level for each of the settings.
+- "force" overrides all and forces a value for each setting (for sleeping in bed)
 
 pova.get_override = function(name, item)
 
@@ -42,7 +42,7 @@ pova.do_override(player)
  - Added pova.do_override(player) to instantly set overrides on list.
  - Added 'pova_loop' setting in minetest.conf to disable override calc loop
 
-###0.3
+### 0.3
 
  - Added custom override names for special functions "default", "min", "max", "force"
  - Tweaked test axe to use new settings.
