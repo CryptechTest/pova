@@ -15,7 +15,7 @@ pova.add_override = function(name, item, def)
 - "default" sets default values for each of the settings to which overrides are added.
 - "min" provides a minimum level for each of the settings.
 - "max" provides a maximum level for each of the settings.
-- "force" overrides all and forces a value for each setting (e.g sleeping in beds)
+- "force" overrides all and forces a value for each setting (e.g setting speed to 0 when sleeping in beds)
 
 pova.get_override = function(name, item)
 
