@@ -35,10 +35,12 @@ end
 -- global functions
 pova.add_override = function(name, item, def)
 
+	-- priority defaults to 50 when not included
 	def.priority = def.priority or 50
 
+	-- if same item is assigned with lower priority then change ignored
 	if pova_list[name][item]
-	and pova_list[name][item].priority <= def.priority then
+	and pova_list[name][item].priority > def.priority then
 		return
 	end
 
@@ -165,6 +167,9 @@ minetest.register_craftitem("pova:axe", {
 		pova.add_override(name, "force", {gravity = 1.2})
 
 --= speed is now max 2, jump is min 3 and gravity forced to 1.2
+
+		-- this wont get applied because priority is lower than 50
+		pova.add_override(name, "force", {speed = 8, priority = 10})
 
 		-- apply override
 		pova.do_override(user)
