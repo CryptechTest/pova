@@ -4,7 +4,7 @@ Pova gives mod makers a set of easy to use functions that safely apply overrides
 
 ## Settings
 
-'pova_loop' setting is 1.0 by default and will calculate and set overrides once a second for each player, set to 0.5 for every half a second etc.
+'pova_loop' setting is 1.0 by default and will calculate and set overrides once a second for each player, set to 0.5 for every half a second or 0 to disable.
 
 ## Functions
 
