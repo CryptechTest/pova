@@ -17,6 +17,8 @@ pova.add_override = function(name, item, def)
 - "max" provides a maximum level for each of the settings.
 - "force" overrides all and forces a value for each setting (e.g setting speed to 0 when sleeping in beds)
 
+ - 'def.priority' can be used to set priorities for custom effects, higher numbers get applied (defaults to 50)
+
 pova.get_override = function(name, item)
 
 - Returns the table containing {speed, jump, gravity} for an added item.

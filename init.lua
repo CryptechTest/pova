@@ -34,6 +34,14 @@ end
 
 -- global functions
 pova.add_override = function(name, item, def)
+
+	def.priority = def.priority or 50
+
+	if pova_list[name][item]
+	and pova_list[name][item].priority <= def.priority then
+		return
+	end
+
 	pova_list[name][item] = def
 end
 
