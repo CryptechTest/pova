@@ -51,4 +51,5 @@ pova.do_override(player)
 ### 0.4
 
  - 'pova_loop' now contains loop timer in seconds, 0 to disable
+ - Added def.priority setting to add_override to stop unimportant changes
  - tweak and optimize code
