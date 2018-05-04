@@ -53,7 +53,3 @@ pova.do_override(player)
  - 'pova_loop' now contains loop timer in seconds, 0 to disable
  - Added def.priority setting to add_override to stop unimportant changes
  - tweak and optimize code
-
-### 0.5
-
- - Remove globalstep and replace with minetest.after for pova_loop

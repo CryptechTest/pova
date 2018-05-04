@@ -12,23 +12,23 @@ local pova_loop = minetest.settings:get_bool("pova_loop") or 1.0
 -- main loop that runs and totals override list
 if pova_loop ~= 0 then
 
-	local pova_func -- define as temp for following function to work
+	local timer = 0
 
-	pova_func = function()
+	minetest.register_globalstep(function(dtime)
+
+		timer = timer + dtime
+
+		if timer < pova_loop then
+			return
+		end
+
+		timer = 0
 
 		-- loop through players and apply overrides
 		for _,player in ipairs(minetest.get_connected_players()) do
 			pova.do_override(player)
 		end
-
-		-- run function again after delay
-		minetest.after(pova_loop, function()
-			pova_func()
-		end)
-	end
-
-	-- initial run
-	pova_func()
+	end)
 end
 
 
