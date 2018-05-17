@@ -9,8 +9,8 @@ local min, max = math.min, math.max
 -- time each override loop runs, 0 to disable
 local pova_loop = minetest.settings:get_bool("pova_loop") or 1.0
 
--- main loop that runs and totals override list
-if pova_loop ~= 0 then
+-- if enabled activate main loop that totals override list on timer
+if pova_loop > 0 then
 
 	local timer = 0
 
@@ -40,6 +40,7 @@ pova.add_override = function(name, item, def)
 
 	-- if same item is assigned with lower priority then change ignored
 	if pova_list[name][item]
+	and pova_list[name][item].priority
 	and pova_list[name][item].priority > def.priority then
 		return
 	end
