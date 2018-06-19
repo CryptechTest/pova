@@ -35,6 +35,9 @@ end
 -- global functions
 pova.add_override = function(name, item, def)
 
+	-- nil check
+	if not name or not item then return end
+
 	-- priority defaults to 50 when not included
 	def.priority = def.priority or 50
 
