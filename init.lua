@@ -39,7 +39,7 @@ pova.add_override = function(name, item, def)
 	if not name or not item then return end
 
 	-- priority defaults to 50 when not included
-	def.priority = def.priority or 50
+	def.priority = tonumber(def.priority) or 50
 
 	-- if same item is assigned with lower priority then change ignored
 	if pova_list[name][item]
