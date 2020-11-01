@@ -122,7 +122,12 @@ pova.do_override = function(player)
 	end
 
 	-- set new overrides
-	player:set_physics_override(speed, jump, gravity)
+--	player:set_physics_override(speed, jump, gravity)
+	player:set_physics_override({
+		speed = speed,
+		jump = jump,
+		gravity = gravity
+	})
 end
 
 
