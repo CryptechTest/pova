@@ -61,10 +61,10 @@ end
 
 pova.do_override = function(player)
 
-	local name = player:get_player_name()
+	local name = player and player:get_player_name()
 
 	-- somehow player list is missing
-	if not pova_list[name] then
+	if not name or not pova_list[name] then
 		return
 	end
 
@@ -122,7 +122,6 @@ pova.do_override = function(player)
 	end
 
 	-- set new overrides
---	player:set_physics_override(speed, jump, gravity)
 	player:set_physics_override({
 		speed = speed,
 		jump = jump,
@@ -139,13 +138,17 @@ end)
 
 -- reset player table on respawn
 minetest.register_on_respawnplayer(function(player)
-	pova_list[ player:get_player_name() ] = {}
-	pova.do_override(player)
+	if player then
+		pova_list[ player:get_player_name() ] = {}
+		pova.do_override(player)
+	end
 end)
 
 -- blank player table on leave
 minetest.register_on_leaveplayer(function(player)
-	pova_list[ player:get_player_name() ] = nil
+	if player then
+		pova_list[ player:get_player_name() ] = nil
+	end
 end)
 
 
@@ -197,5 +200,7 @@ minetest.register_craftitem("pova:axe", {
 
 		-- apply override
 		pova.do_override(user)
-	end,
+	end
 })
+
+print("[MOD] Pova loaded")
